@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Speech Translation</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+  <style>
+    body, button, #translation {
+      font-family: 'Poppins', Arial, sans-serif;
+    }
+
+    select {
+      padding: 10px;
+      font-size: 16px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      appearance: none;
+      background-color: #f8f8f8;
+      background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="%23333" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6" /></svg>');
+      background-repeat: no-repeat;
+      background-position: right 15px center; /* Lebar sedikit diperbesar */
+      cursor: pointer;
+      width: 200px; /* Lebar dropdown diperbesar */
+    }
+    
+
+    select:focus {
+      outline: none;
+      border-color: #2653F1;
+    }
+
+    body {
+      margin: 0;
+      padding: 0;
+      background-image: url('https://pn-gunungsugih.go.id/main/images/2024/BG-Gunung-Sugih.jpg');
+      background-size: cover;
+    }
+
+    .container {
+      max-width: 800px;
+      margin: 50px auto;
+      text-align: center;
+      border-radius: 15px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      background-color: #ffffff;
+      padding: 30px;
+    }
+
+    #translation {
+      margin-top: 20px;
+      margin-bottom: 20px;
+      font-size: 24px;
+      font-weight: bold;
+      padding: 40px;
+      border-radius: 10px;
+      background-color: #ffe9e9;
+      outline: 1px solid #DE7174;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      color: #030303;
+    }
+
+    h1 {
+      margin-bottom: 20px;
+    }
+
+    button {
+      padding: 10px 20px;
+      font-size: 16px;
+      margin: 20px 10px 0;
+      cursor: pointer;
+      color: #fff;
+      border: none;
+      border-radius: 5px;
+    }
+
+    button#start {
+      background-color: #2653F1;
+    }
+
+    button#start:hover {
+      background-color: #1F44C3;
+    }
+
+    button#stop {
+      background-color: #FF0000;
+    }
+
+    button#stop:hover {
+      background-color: #CC0000;
+    }
+
+    button#restart {
+      background-color: #008000;
+    }
+
+    button#restart:hover {
+      background-color: #006400;
+    }
+
+    .logo img {
+      width: 250px;
+      height: auto;
+    }
+
+    footer {
+      position: fixed;
+      bottom: 10px;
+      right: 10px;
+      font-size: 12px;
+      color: #ffffff;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="logo">
+      <img src="https://pn-gunungsugih.go.id/main/images/2024/LOGO-SIMABARA.png" alt="Logo PNG">
+    </div>
+    <h1>SISTEM PENERJEMAH BERBASIS SUARA (SIMABARA) PNGNS</h1>
+    <div>
+      <label for="fromLanguage">Dari Bahasa:</label>
+      <select id="fromLanguage">
+        <option value="id">Bahasa Indonesia</option>
+        <option value="en">Bahasa Inggris</option>
+        <option value="ja">Bahasa Jepang</option>
+        <option value="jv">Bahasa Jawa</option>
+        <option value="zh">Bahasa Cina</option>
+      </select>
+      <label for="toLanguage">Ke Bahasa:</label>
+      <select id="toLanguage">
+        <option value="en">Bahasa Inggris</option>
+        <option value="ja">Bahasa Jepang</option>
+        <option value="id">Bahasa Indonesia</option>
+        <option value="jv">Bahasa Jawa</option>
+        <option value="zh">Bahasa Cina</option>
+      </select>
+    </div>
+    <button id="start"><i class="fas fa-microphone"></i> Mulai Recording</button>
+    <button id="stop"><i class="fas fa-stop"></i> Stop Recording</button>
+    <button id="restart"><i class="fas fa-redo"></i> Restart</button>
+    <p id="translation">Hasil Terjemahan...</p>
+    <footer>App created by PN Gunung Sugih 2024 | Update 0.2</footer>
+  </div>
+<script>
+const startButton = document.getElementById('start');
+const stopButton = document.getElementById('stop');
+const restartButton = document.getElementById('restart');
+const translationText = document.getElementById('translation');
+const fromLanguageSelect = document.getElementById('fromLanguage');
+const toLanguageSelect = document.getElementById('toLanguage');
+
+let recognizing = false; // State to keep track of whether recognition is ongoing
+let recognition; // Define recognition outside of the startSpeechRecognition function
+let lastTranslatedText = ''; // Variable to store the last translated text
+
+startButton.addEventListener('click', () => {
+  if (!recognizing) {
+    startSpeechRecognition();
+    recognizing = true;
+    startButton.textContent = 'Mendengarkan...'; // Change button text to indicate recognition is ongoing
+  } else {
+    restartRecognition();
+  }
+});
+
+stopButton.addEventListener('click', () => {
+  if (recognizing) {
+    recognition.stop();
+    recognizing = false;
+    startButton.innerHTML = '<i class="fas fa-microphone"></i> Mulai Recording'; // Reset button text if recognition is stopped manually
+  }
+});
+
+restartButton.addEventListener('click', () => {
+  if (recognizing) {
+    recognition.stop();
+    recognizing = false;
+  }
+  startButton.innerHTML = '<i class="fas fa-microphone"></i> Mulai Recording'; // Add microphone icon before the text
+  translationText.textContent = 'Hasil Terjemahan...'; // Set translation text back to its initial state
+});
+
+
+function startSpeechRecognition() {
+  recognition = new webkitSpeechRecognition() || new SpeechRecognition();
+  recognition.lang = 'id-ID'; // Default language is Indonesian
+
+  recognition.onresult = (event) => {
+    const transcript = event.results[0][0].transcript;
+    translationText.textContent = 'Hasil Terjemahan...';
+    translate(transcript);
+  };
+
+  recognition.start();
+}
+
+function restartRecognition() {
+  if (recognizing) {
+    recognition.stop();
+  }
+  recognizing = false;
+  startButton.innerHTML = '<i class="fas fa-microphone"></i> Mulai Recording'; // Reset button text to its original state
+}
+
+recognition.onerror = (event) => {
+  console.error('Recognition error:', event.error);
+  if (recognizing) {
+    recognition.stop();
+  }
+  recognizing = false;
+  startButton.innerHTML = '<i class="fas fa-microphone"></i> Mulai Recording'; // Reset button text to its original state
+};
+
+recognition.onend = () => {
+  recognizing = false;
+  startButton.innerHTML = '<i class="fas fa-microphone"></i> Mulai Recording'; // Reset button text to its original state
+};
+
+async function translate(text) {
+  try {
+    const fromLanguage = fromLanguageSelect.value;
+    const toLanguage = toLanguageSelect.value;
+
+    lastTranslatedText = await googleTranslate(text, { from: fromLanguage, to: toLanguage });
+    translationText.textContent = lastTranslatedText;
+    speak(lastTranslatedText, toLanguage);
+  } catch (error) {
+    console.error('Translation error:', error);
+    translationText.textContent = 'Translation error';
+  }
+}
+
+// Function to detect language
+function googleDetectLanguage(text) {
+  return new Promise((resolve, reject) => {
+    const apiUrl = `https://translate.googleapis.com/translate_a/single?client=gtx&sl=auto&tl=en&q=${encodeURI(text)}`;
+    fetch(apiUrl)
+      .then(response => response.json())
+      .then(data => {
+        const language = data[2];
+        resolve({ language });
+      })
+      .catch(reject);
+  });
+}
+
+// Function to translate text
+function googleTranslate(text, { from = 'auto', to = 'en' } = {}) {
+  return new Promise((resolve, reject) => {
+    const apiUrl = `https://translate.googleapis.com/translate_a/single?client=gtx&sl=${from}&tl=${to}&dt=t&q=${encodeURI(text)}`;
+    fetch(apiUrl)
+      .then(response => response.json())
+      .then(data => {
+        const translatedText = data[0][0][0];
+        resolve(translatedText);
+      })
+      .catch(reject);
+  });
+}
+
+function speak(text, lang) {
+  const utterance = new SpeechSynthesisUtterance(text);
+  utterance.lang = lang === 'en' ? 'en-US' : 'ja-JP'; // Set language based on target language
+  utterance.voiceURI = 'Google 日本語 (ja-JP)'; // Choose Japanese voice
+  speechSynthesis.speak(utterance);
+  
+}
+
+function speak(text, lang) {
+  const utterance = new SpeechSynthesisUtterance(text);
+  let voiceURI;
+  switch (lang) {
+    case 'en':
+      utterance.lang = 'en-US';
+      voiceURI = 'Google US English';
+      break;
+    case 'ja':
+      utterance.lang = 'ja-JP';
+      voiceURI = 'Google 日本語';
+      break;
+    case 'id':
+      utterance.lang = 'id-ID';
+      voiceURI = 'Google Bahasa Indonesia';
+      break;
+    case 'jv':
+      utterance.lang = 'jv-ID';
+      voiceURI = 'Google Basa Jawa';
+      break;
+    case 'zh-CN': // Menambahkan kasus untuk bahasa Cina
+      utterance.lang = 'zh-CN'; // Gunakan kode bahasa Cina
+      voiceURI = 'Google 普通话（中国大陆）'; // Pilih suara Cina standar
+      break;
+    default:
+      utterance.lang = 'en-US';
+      voiceURI = 'Google US English';
+      break;
+  }
+  utterance.voiceURI = voiceURI;
+  speechSynthesis.speak(utterance);
+}
+
+
+
+</script>
+</body>
+</html>
