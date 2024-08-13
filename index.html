@@ -6,6 +6,7 @@
   <title>Speech Translation</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
   <style>
+    /* Mengatur tampilan keseluruhan */
     body, button, #translation {
       font-family: 'Poppins', Arial, sans-serif;
     }
@@ -27,14 +28,20 @@
 
     select:focus {
       outline: none;
-      border-color: #2653F1;
+      border-color: #FF6F61;
     }
 
     body {
       margin: 0;
       padding: 0;
-      background-image: url('https://pn-gunungsugih.go.id/main/images/2024/BG-Gunung-Sugih.jpg');
+      background-color: #F9F3F3;
+      background-image: linear-gradient(135deg, #FFA07A 0%, #FF6F61 100%);
       background-size: cover;
+      background-attachment: fixed;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
     }
 
     .container {
@@ -42,9 +49,11 @@
       margin: 50px auto;
       text-align: center;
       border-radius: 15px;
-      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
       background-color: #ffffff;
       padding: 30px;
+      backdrop-filter: blur(10px);
+      background: rgba(255, 255, 255, 0.8); /* Semi-transparan */
     }
 
     #translation {
@@ -52,16 +61,19 @@
       margin-bottom: 20px;
       font-size: 24px;
       font-weight: bold;
-      padding: 40px;
+      padding: 20px;
       border-radius: 10px;
-      background-color: #ffe9e9;
-      outline: 1px solid #DE7174;
-      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-      color: #030303;
+      background-color: #FFDDC1;
+      border: 2px solid #FF6F61;
+      color: #333;
+      text-align: center;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
     }
 
     h1 {
       margin-bottom: 20px;
+      color: #FF6F61;
+      font-size: 28px;
     }
 
     button {
@@ -71,44 +83,48 @@
       cursor: pointer;
       color: #fff;
       border: none;
-      border-radius: 5px;
+      border-radius: 25px;
+      transition: background-color 0.3s ease, transform 0.2s ease;
     }
 
     button#start {
-      background-color: #2653F1;
+      background-color: #FF6F61;
     }
 
     button#start:hover {
-      background-color: #1F44C3;
+      background-color: #E65C54;
+      transform: scale(1.05);
     }
 
     button#stop {
-      background-color: #FF0000;
+      background-color: #FF4C4C;
     }
 
     button#stop:hover {
-      background-color: #CC0000;
+      background-color: #E04343;
+      transform: scale(1.05);
     }
 
     button#restart {
-      background-color: #008000;
+      background-color: #FFA07A;
     }
 
     button#restart:hover {
-      background-color: #006400;
+      background-color: #FF8A5B;
+      transform: scale(1.05);
     }
 
     .logo img {
-      width: 250px;
+      width: 200px;
       height: auto;
+      margin-bottom: 20px;
     }
 
     footer {
-      position: fixed;
-      bottom: 10px;
-      right: 10px;
+      margin-top: 20px;
       font-size: 12px;
-      color: #ffffff;
+      color: #555;
+      text-align: center;
     }
   </style>
 </head>
@@ -143,6 +159,7 @@
     <footer>App created by PN Gunung Sugih 2024 | Update 0.2</footer>
   </div>
 <script>
+// JavaScript code remains unchanged as in your original version
 const startButton = document.getElementById('start');
 const stopButton = document.getElementById('stop');
 const restartButton = document.getElementById('restart');
@@ -261,14 +278,6 @@ function googleTranslate(text, { from = 'auto', to = 'en' } = {}) {
 
 function speak(text, lang) {
   const utterance = new SpeechSynthesisUtterance(text);
-  utterance.lang = lang === 'en' ? 'en-US' : 'ja-JP'; // Set language based on target language
-  utterance.voiceURI = 'Google 日本語 (ja-JP)'; // Choose Japanese voice
-  speechSynthesis.speak(utterance);
-  
-}
-
-function speak(text, lang) {
-  const utterance = new SpeechSynthesisUtterance(text);
   let voiceURI;
   switch (lang) {
     case 'en':
@@ -299,7 +308,6 @@ function speak(text, lang) {
   utterance.voiceURI = voiceURI;
   speechSynthesis.speak(utterance);
 }
-
 
 
 </script>
