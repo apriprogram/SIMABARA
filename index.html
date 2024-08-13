@@ -1,163 +1,229 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Speech Translation</title>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
-  <style>
-    /* Mengatur tampilan keseluruhan */
-    body, button, #translation {
-      font-family: 'Poppins', Arial, sans-serif;
-    }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Speech Translation</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <style>
+        /* General styling */
+        body,
+        button,
+        #translation {
+            font-family: 'Poppins', Arial, sans-serif;
+        }
 
-    select {
-      padding: 10px;
-      font-size: 16px;
-      border: 1px solid #ccc;
-      border-radius: 5px;
-      appearance: none;
-      background-color: #f8f8f8;
-      background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="%23333" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6" /></svg>');
-      background-repeat: no-repeat;
-      background-position: right 15px center; /* Lebar sedikit diperbesar */
-      cursor: pointer;
-      width: 200px; /* Lebar dropdown diperbesar */
-    }
-    
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: #F9F3F3;
+            background-image: linear-gradient(135deg, #5FC1FE 0%, #FF4C4C 100%);
+            background-size: cover;
+            background-attachment: fixed;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
 
-    select:focus {
-      outline: none;
-      border-color: #FF6F61;
-    }
+        .container-custom {
+            max-width: 1200px;
+            margin: 50px auto;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(120, 120, 120, 0.2);
+            background-color: #ffffff;
+            padding: 30px;
+            backdrop-filter: blur(10px);
+            background: rgba(255, 255, 255, 0.8);
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            flex-wrap: wrap;
+        }
 
-    body {
-      margin: 0;
-      padding: 0;
-      background-color: #F9F3F3;
-      background-image: linear-gradient(135deg, #FFA07A 0%, #FF6F61 100%);
-      background-size: cover;
-      background-attachment: fixed;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
-    }
+        .logo img {
+            width: 150px;
+            height: auto;
+            margin-bottom: 20px;
+        }
 
-    .container {
-      max-width: 800px;
-      margin: 50px auto;
-      text-align: center;
-      border-radius: 15px;
-      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
-      background-color: #ffffff;
-      padding: 30px;
-      backdrop-filter: blur(10px);
-      background: rgba(255, 255, 255, 0.8); /* Semi-transparan */
-    }
+        h1 {
+            margin: 0;
+            color: #3A6AFA;
+            font-size: 28px;
+            text-align: left;
+        }
 
-    #translation {
-      margin-top: 20px;
-      margin-bottom: 20px;
-      font-size: 24px;
-      font-weight: bold;
-      padding: 20px;
-      border-radius: 10px;
-      background-color: #FFDDC1;
-      border: 2px solid #FF6F61;
-      color: #333;
-      text-align: center;
-      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-    }
+        p.subtitle {
+            margin: 5px 0 0 0;
+            color: #555;
+            text-align: left;
+        }
 
-    h1 {
-      margin-bottom: 20px;
-      color: #FF6F61;
-      font-size: 28px;
-    }
+        .form-controls {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            margin-bottom: 0px;
+            gap: 15px;
+        }
 
-    button {
-      padding: 10px 20px;
-      font-size: 16px;
-      margin: 20px 10px 0;
-      cursor: pointer;
-      color: #fff;
-      border: none;
-      border-radius: 25px;
-      transition: background-color 0.3s ease, transform 0.2s ease;
-    }
+        .form-group label {
+            font-size: 14px;
+            color: #020A24;
+            font-weight: normal;
+        }
 
-    button#start {
-      background-color: #FF6F61;
-    }
+        .form-control {
+            padding: 12px;
+            padding-left: 40px;
+            padding-right: 40px;
+            border-radius: 10px;
+            border: 1px solid #cbcbcb;
+            font-size: 15px;
+            color: #333;
+            height: auto;
+        }
 
-    button#start:hover {
-      background-color: #E65C54;
-      transform: scale(1.05);
-    }
+        .form-control option {
+            font-size: 16px;
+            padding: 10px;
+            background-color: #fff;
+            color: #333;
+        }
 
-    button#stop {
-      background-color: #FF4C4C;
-    }
+        .form-control:focus {
+            border-color: #4A58FB;
+            box-shadow: 0 0 8px rgba(95, 193, 254, 0.5);
+        }
 
-    button#stop:hover {
-      background-color: #E04343;
-      transform: scale(1.05);
-    }
+        .form-controls button {
+            padding: 10px 20px;
+            font-size: 14px;
+            cursor: pointer;
+            color: #fff;
+            border: none;
+            border-radius: 25px;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+        }
 
-    button#restart {
-      background-color: #FFA07A;
-    }
+        .form-controls button#start {
+            background-color: #3A6AFA;
+        }
 
-    button#restart:hover {
-      background-color: #FF8A5B;
-      transform: scale(1.05);
-    }
+        .form-controls button#start:hover {
+            background-color: #2B5BED;
+            transform: scale(1.05);
+        }
 
-    .logo img {
-      width: 200px;
-      height: auto;
-      margin-bottom: 20px;
-    }
+        .form-controls button#stop {
+            background-color: #FA3A3A;
+        }
 
-    footer {
-      margin-top: 20px;
-      font-size: 12px;
-      color: #555;
-      text-align: center;
-    }
-  </style>
+        .form-controls button#stop:hover {
+            background-color: #ED2B2B;
+            transform: scale(1.05);
+        }
+
+        .form-controls button#restart {
+            background-color: #008001;
+        }
+
+        .form-controls button#restart:hover {
+            background-color: #015701;
+            transform: scale(1.05);
+        }
+
+        /* Styling the translation box */
+        .translation-container {
+            position: relative;
+            width: 100%;
+            max-width: 800px;
+        }
+
+        #translation {
+            font-size: 16px;
+            font-weight: normal;
+            padding: 20px;
+            border-radius: 10px;
+            background-color: #ffffff;
+            border: 1px solid #cbcbcb;
+            color: #333;
+            text-align: left;
+            min-height: 200px;
+            max-height: 300px;
+            overflow-y: auto;
+            margin-bottom: 0px;
+        }
+
+        footer {
+            margin-top: 20px;
+            font-size: 12px;
+            color: #555;
+            text-align: center;
+            width: 100%;
+        }
+
+                /* Divider style */
+                .divider {
+            width: 100%;
+            border-top: 1px solid #ddd;
+            margin: 20px 0;
+        }
+    </style>
 </head>
+
 <body>
-  <div class="container">
-    <div class="logo">
-      <img src="https://pn-gunungsugih.go.id/main/images/2024/LOGO-SIMABARA.png" alt="Logo PNG">
+    <div class="container-custom d-flex flex-column align-items-center">
+        <div class="logo">
+            <img src="https://media.pn-gunungsugih.go.id//public/images/pn_media_1-66bb197fa2cad.png" alt="Logo PNG">
+        </div>
+        <div class="header text-left" style="text-align: left;">
+            <h1 style="margin: 0; color: #3A6AFA; font-size: 28px; font-weight: bold;">
+                APLIKASI SISTEM <br> PENERJEMAH BERBASIS SUARA
+            </h1>
+            <h1>(SIMABARA)</h1>
+            <p class="subtitle" style="margin: 5px 0 0 0; color: #555;">
+                Pengadilan Negeri Gunung Sugih
+            </p>
+        </div>
+        <div class="divider"></div>
+        <div class="form-controls w-100 justify-content-center">
+            <div class="form-group">
+                <label for="fromLanguage">Dari Bahasa:</label>
+                <select class="form-control" id="fromLanguage">
+                    <option value="id">Bahasa Indonesia</option>
+                    <option value="en">Bahasa Inggris</option>
+                    <option value="ja">Bahasa Jepang</option>
+                    <option value="jv">Bahasa Jawa</option>
+                    <option value="zh">Bahasa Cina</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="toLanguage">Ke Bahasa:</label>
+                <select class="form-control" id="toLanguage">
+                    <option value="en">Bahasa Inggris</option>
+                    <option value="ja">Bahasa Jepang</option>
+                    <option value="id">Bahasa Indonesia</option>
+                    <option value="jv">Bahasa Jawa</option>
+                    <option value="zh">Bahasa Cina</option>
+                </select>
+            </div>
+        </div>
+        <div class="form-controls w-100 justify-content-center mb-4 mt-0">
+            <button id="start" class="btn btn-primary"><i class="fas fa-microphone"></i> Mulai Recording</button>
+            <button id="stop" class="btn btn-danger"><i class="fas fa-stop"></i> Stop Recording</button>
+            <button id="restart" class="btn btn-warning"><i class="fas fa-redo"></i> Restart</button>
+        </div>
+
+        <div class="translation-container">
+            <p id="translation">Hasil Terjemahan...</p>
+        </div>
     </div>
-    <h1>SISTEM PENERJEMAH BERBASIS SUARA (SIMABARA) PNGNS</h1>
-    <div>
-      <label for="fromLanguage">Dari Bahasa:</label>
-      <select id="fromLanguage">
-        <option value="id">Bahasa Indonesia</option>
-        <option value="en">Bahasa Inggris</option>
-        <option value="ja">Bahasa Jepang</option>
-        <option value="jv">Bahasa Jawa</option>
-        <option value="zh">Bahasa Cina</option>
-      </select>
-      <label for="toLanguage">Ke Bahasa:</label>
-      <select id="toLanguage">
-        <option value="en">Bahasa Inggris</option>
-        <option value="ja">Bahasa Jepang</option>
-        <option value="id">Bahasa Indonesia</option>
-        <option value="jv">Bahasa Jawa</option>
-        <option value="zh">Bahasa Cina</option>
-      </select>
-    </div>
-    <button id="start"><i class="fas fa-microphone"></i> Mulai Recording</button>
-    <button id="stop"><i class="fas fa-stop"></i> Stop Recording</button>
-    <button id="restart"><i class="fas fa-redo"></i> Restart</button>
-    <p id="translation">Hasil Terjemahan...</p>
-    <footer>App created by PN Gunung Sugih 2024 | Update 0.2</footer>
-  </div>
 <script>
 // JavaScript code remains unchanged as in your original version
 const startButton = document.getElementById('start');
@@ -311,5 +377,10 @@ function speak(text, lang) {
 
 
 </script>
+
+<!-- Bootstrap JS and dependencies -->
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </body>
 </html>
