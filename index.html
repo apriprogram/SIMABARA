@@ -1,386 +1,464 @@
-<!DOCTYPE html>
+  <!DOCTYPE html>
 <html lang="en">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Speech Translation</title>
-    <!-- Bootstrap CSS -->
-    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
-    <!-- Font Awesome -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
-    <style>
-        /* General styling */
-        body,
-        button,
-        #translation {
-            font-family: 'Poppins', Arial, sans-serif;
-        }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Speech Translation</title>
+  <!-- Bootstrap CSS -->
+  <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+  <style>
+    /* General styling */
+    body,
+    button,
+    #translation {
+      font-family: 'Poppins';
+    }
 
-        body {
-            margin: 0;
-            padding: 0;
-            background-color: #F9F3F3;
-            background-image: linear-gradient(135deg, #5FC1FE 0%, #FF4C4C 100%);
-            background-size: cover;
-            background-attachment: fixed;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-        }
+    body {
+      margin: 0;
+      padding: 0;
+      background-color: #E6E9F2;
+      background-image: #F5F6FA;
+      background-size: cover;
+      background-attachment: fixed;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
 
-        .container-custom {
-            max-width: 1200px;
-            margin: 50px auto;
-            border-radius: 15px;
-            box-shadow: 0 4px 15px rgba(120, 120, 120, 0.2);
-            background-color: #ffffff;
-            padding: 30px;
-            backdrop-filter: blur(10px);
-            background: rgba(255, 255, 255, 0.8);
-            display: flex;
-            flex-direction: row;
-            align-items: center;
-            flex-wrap: wrap;
-        }
+    iframe {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      border: none;
+      z-index: -1;
+    }
 
-        .logo img {
-            width: 150px;
-            height: auto;
-            margin-bottom: 20px;
-        }
+    .content {
+      position: relative;
+      z-index: 1;
+      text-align: center;
+      color: white;
+    }
 
-        h1 {
-            margin: 0;
-            color: #3A6AFA;
-            font-size: 28px;
-            text-align: left;
-        }
+    .container-custom {
+      max-width: 1200px;
+      margin: 50px auto;
+      border-radius: 15px;
+      box-shadow: 0 4px 15px rgba(223, 223, 223, 0.2);
+      background-color: #E6E9F2;
+      padding: 30px;
+      backdrop-filter: blur(10px);
+      background: #F5F6FA;
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      flex-wrap: wrap;
+    }
 
-        p.subtitle {
-            margin: 5px 0 0 0;
-            color: #555;
-            text-align: left;
-        }
+    .logo img {
+      width: 150px;
+      height: auto;
+      margin-bottom: 20px;
+    }
 
-        .form-controls {
-            display: flex;
-            flex-wrap: wrap;
-            align-items: center;
-            margin-bottom: 0px;
-            gap: 15px;
-        }
+    h1 {
+      margin: 0;
+      color: #3A6AFA;
+      font-size: 28px;
+      text-align: left;
+    }
 
-        .form-group label {
-            font-size: 14px;
-            color: #020A24;
-            font-weight: normal;
-        }
+    p.subtitle {
+      margin: 5px 0 0 0;
+      color: #555;
+      text-align: left;
+    }
 
-        .form-control {
-            padding: 12px;
-            padding-left: 40px;
-            padding-right: 40px;
-            border-radius: 10px;
-            border: 1px solid #cbcbcb;
-            font-size: 15px;
-            color: #333;
-            height: auto;
-        }
+    .form-controls {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      margin-bottom: 0px;
+      gap: 15px;
+    }
 
-        .form-control option {
-            font-size: 16px;
-            padding: 10px;
-            background-color: #fff;
-            color: #333;
-        }
+    .form-group label {
+      font-size: 14px;
+      color: #020A24;
+      font-weight: normal;
+    }
 
-        .form-control:focus {
-            border-color: #4A58FB;
-            box-shadow: 0 0 8px rgba(95, 193, 254, 0.5);
-        }
+    .form-control {
+      padding: 12px;
+      padding-left: 40px;
+      padding-right: 40px;
+      border-radius: 10px;
+      border: 1px solid #cacaca;
+      font-size: 15px;
+      color: #333;
+      height: auto;
+    }
 
-        .form-controls button {
-            padding: 10px 20px;
-            font-size: 14px;
-            cursor: pointer;
-            color: #fff;
-            border: none;
-            border-radius: 25px;
-            transition: background-color 0.3s ease, transform 0.2s ease;
-        }
+    .form-control option {
+      font-size: 16px;
+      padding: 10px;
+      background-color: #F5F6FA;
+      color: #333;
+    }
 
-        .form-controls button#start {
-            background-color: #3A6AFA;
-        }
+    .form-control:focus {
+      border-color: #4A58FB;
+      box-shadow: 0 0 8px rgba(95, 193, 254, 0.5);
+    }
 
-        .form-controls button#start:hover {
-            background-color: #2B5BED;
-            transform: scale(1.05);
-        }
+    .form-controls button {
+      padding: 10px 20px;
+      font-size: 14px;
+      cursor: pointer;
+      color: #fff;
+      border: none;
+      border-radius: 4px;
+      transition: background-color 0.3s ease, transform 0.2s ease;
+    }
 
-        .form-controls button#stop {
-            background-color: #FA3A3A;
-        }
+    .form-controls button#start {
+      background-color: #3A6AFA;
+    }
 
-        .form-controls button#stop:hover {
-            background-color: #ED2B2B;
-            transform: scale(1.05);
-        }
+    .form-controls button#start:hover {
+      background-color: #2350d6;
+      transform: scale(1);
+    }
 
-        .form-controls button#restart {
-            background-color: #008001;
-        }
+    .form-controls button#stop {
+      background-color: #FA3A3A;
+    }
 
-        .form-controls button#restart:hover {
-            background-color: #015701;
-            transform: scale(1.05);
-        }
+    .form-controls button#stop:hover {
+      background-color: #dd2222;
+      transform: scale(1);
+    }
 
-        /* Styling the translation box */
-        .translation-container {
-            position: relative;
-            width: 100%;
-            max-width: 800px;
-        }
+    .form-controls button#restart {
+      background-color: #008001;
+    }
 
-        #translation {
-            font-size: 16px;
-            font-weight: normal;
-            padding: 20px;
-            border-radius: 10px;
-            background-color: #ffffff;
-            border: 1px solid #cbcbcb;
-            color: #333;
-            text-align: left;
-            min-height: 200px;
-            max-height: 300px;
-            overflow-y: auto;
-            margin-bottom: 0px;
-        }
+    .form-controls button#restart:hover {
+      background-color: #015701;
+      transform: scale(1);
+    }
 
-        footer {
-            margin-top: 20px;
-            font-size: 12px;
-            color: #555;
-            text-align: center;
-            width: 100%;
-        }
+    /* Styling the translation box */
+    .translation-container {
+      position: relative;
+      width: 100%;
+      max-width: 800px;
+    }
 
-                /* Divider style */
-                .divider {
-            width: 100%;
-            border-top: 1px solid #ddd;
-            margin: 20px 0;
-        }
-    </style>
+    #translation {
+      font-size: 16px;
+      font-weight: normal;
+      padding: 20px;
+      border-radius: 10px;
+      background-color: #E6E9F2;
+      border: 1px solid #E6E9F2;
+      color: #333;
+      text-align: left;
+      min-height: 200px;
+      max-height: 300px;
+      overflow-y: auto;
+      margin-bottom: 0px;
+    }
+
+    footer {
+      margin-top: 20px;
+      font-size: 12px;
+      color: #555;
+      text-align: center;
+      width: 100%;
+    }
+
+    /* Divider style */
+    .divider {
+      width: 100%;
+      border-top: 1px solid #cacaca;
+      margin: 20px 0;
+    }
+
+    /* Responsiveness adjustments */
+@media (max-width: 768px) {
+  .logo img {
+    width: 100px;
+    margin-bottom: 15px;
+  }
+
+  h1.display-6 {
+    font-size: 20px;
+  }
+
+  .form-controls button {
+    font-size: 12px;
+    padding: 8px 12px;
+  }
+
+  #translation {
+    font-size: 14px;
+    min-height: 100px;
+  }
+}
+
+@media (max-width: 576px) {
+  .form-controls {
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .form-group label {
+    font-size: 12px;
+  }
+
+  .form-control {
+    font-size: 14px;
+    padding: 10px;
+  }
+}
+
+  </style>
 </head>
 
 <body>
-    <div class="container-custom d-flex flex-column align-items-center">
-        <div class="logo">
-            <img src="https://media.pn-gunungsugih.go.id//public/images/pn_media_1-66bb197fa2cad.png" alt="Logo PNG">
-        </div>
-        <div class="header text-left" style="text-align: left;">
-            <h1 style="margin: 0; color: #3A6AFA; font-size: 28px; font-weight: bold;">
-                APLIKASI SISTEM <br> PENERJEMAH BERBASIS SUARA
-            </h1>
-            <h1>(SIMABARA)</h1>
-            <p class="subtitle" style="margin: 5px 0 0 0; color: #555;">
-                Pengadilan Negeri Gunung Sugih
-            </p>
-        </div>
-        <div class="divider"></div>
-        <div class="form-controls w-100 justify-content-center">
-            <div class="form-group">
-                <label for="fromLanguage">Dari Bahasa:</label>
-                <select class="form-control" id="fromLanguage">
-                    <option value="id">Bahasa Indonesia</option>
-                    <option value="en">Bahasa Inggris</option>
-                    <option value="ja">Bahasa Jepang</option>
-                    <option value="jv">Bahasa Jawa</option>
-                    <option value="zh">Bahasa Cina</option>
-                </select>
-            </div>
-            <div class="form-group">
-                <label for="toLanguage">Ke Bahasa:</label>
-                <select class="form-control" id="toLanguage">
-                    <option value="en">Bahasa Inggris</option>
-                    <option value="ja">Bahasa Jepang</option>
-                    <option value="id">Bahasa Indonesia</option>
-                    <option value="jv">Bahasa Jawa</option>
-                    <option value="zh">Bahasa Cina</option>
-                </select>
-            </div>
-        </div>
-        <div class="form-controls w-100 justify-content-center mb-4 mt-0">
-            <button id="start" class="btn btn-primary"><i class="fas fa-microphone"></i> Mulai Recording</button>
-            <button id="stop" class="btn btn-danger"><i class="fas fa-stop"></i> Stop Recording</button>
-            <button id="restart" class="btn btn-warning"><i class="fas fa-redo"></i> Restart</button>
-        </div>
-
-        <div class="translation-container">
-            <p id="translation">Hasil Terjemahan...</p>
-        </div>
+  <iframe src="https://www.shadergradient.co/customize?animate=on&axesHelper=off&bgColor1=%23000000&bgColor2=%23000000&brightness=1.2&cAzimuthAngle=170&cDistance=4.4&cPolarAngle=70&cameraZoom=1&color1=%231c39d9&color2=%233b6df7&color3=%235f93fb&destination=onCanvas&embedMode=off&envPreset=city&format=gif&fov=45&frameRate=10&gizmoHelper=hide&grain=off&lightType=3d&pixelDensity=1&positionX=0&positionY=0.9&positionZ=-0.3&range=enabled&rangeEnd=40&rangeStart=0&reflection=0.1&rotationX=45&rotationY=0&rotationZ=0&shader=defaults&type=waterPlane&uAmplitude=0&uDensity=1.2&uFrequency=0&uSpeed=0.2&uStrength=3.4&uTime=0&wireframe=false"></iframe>
+  <div class="content">
+  <div class="container-custom d-flex flex-column ">
+    <div class="logo ">
+      <img src="https://media.pn-gunungsugih.go.id//public/images/pn_media_1-66bb197fa2cad.png" alt="Logo PNG">
     </div>
-<script>
-// JavaScript code remains unchanged as in your original version
-const startButton = document.getElementById('start');
-const stopButton = document.getElementById('stop');
-const restartButton = document.getElementById('restart');
-const translationText = document.getElementById('translation');
-const fromLanguageSelect = document.getElementById('fromLanguage');
-const toLanguageSelect = document.getElementById('toLanguage');
+    <div class=" align-items-lg-start header text-left" style="text-align: left; ">
+      <div style="text-align: center;">
+        <h1 style="margin: 0; color: #26272B; font-size: 30px;">
+          Sistem Penerjemah<br>Berbasis Suara
+        </h1>
+        <h1 class="mt-2">(SIMABARA)</h1>
+        <p class="subtitle mt-2" style="margin: 5px 0 0 0; color: #555;">
+          Pengadilan Negeri Gunung Sugih
+        </p>
+      </div>
+    <div class="divider"></div>
+    <div class="form-controls w-100 justify-content-center">
+      <div class="form-group">
+        <label for="fromLanguage">Dari Bahasa:</label>
+        <select class="form-control" id="fromLanguage">
+          <option value="id">Bahasa Indonesia</option>
+          <option value="en">Bahasa Inggris</option>
+          <option value="ja">Bahasa Jepang</option>
+          <option value="jv">Bahasa Jawa</option>
+          <option value="zh">Bahasa Cina</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label for="toLanguage">Ke Bahasa:</label>
+        <select class="form-control" id="toLanguage">
+          <option value="en">Bahasa Inggris</option>
+          <option value="ja">Bahasa Jepang</option>
+          <option value="id">Bahasa Indonesia</option>
+          <option value="jv">Bahasa Jawa</option>
+          <option value="zh">Bahasa Cina</option>
+        </select>
+      </div>
+    </div>
+  </div>
 
-let recognizing = false; // State to keep track of whether recognition is ongoing
-let recognition; // Define recognition outside of the startSpeechRecognition function
-let lastTranslatedText = ''; // Variable to store the last translated text
+    <div class="form-controls w-100 justify-content-center mb-4 mt-0">
+      <button id="start" class="btn btn-primary"><i class="fas fa-microphone"></i> Mulai Recording</button>
+      <button id="stop" class="btn btn-danger"><i class="fas fa-stop"></i> Stop Recording</button>
+      <button id="restart" class="btn btn-success"><i class="fas fa-redo"></i> Restart</button>
+    </div>
 
-startButton.addEventListener('click', () => {
-  if (!recognizing) {
-    startSpeechRecognition();
-    recognizing = true;
-    startButton.textContent = 'Mendengarkan...'; // Change button text to indicate recognition is ongoing
-  } else {
-    restartRecognition();
-  }
-});
+    <div class="translation-container">
+      <p id="translation">Hasil Terjemahan...</p>
+    </div>
+  </div>
+</div>
+  <script>
+    // JavaScript code remains unchanged as in your original version
+    const startButton = document.getElementById('start');
+    const stopButton = document.getElementById('stop');
+    const restartButton = document.getElementById('restart');
+    const translationText = document.getElementById('translation');
+    const fromLanguageSelect = document.getElementById('fromLanguage');
+    const toLanguageSelect = document.getElementById('toLanguage');
 
-stopButton.addEventListener('click', () => {
-  if (recognizing) {
-    recognition.stop();
-    recognizing = false;
-    startButton.innerHTML = '<i class="fas fa-microphone"></i> Mulai Recording'; // Reset button text if recognition is stopped manually
-  }
-});
+    let recognizing = false; // State to keep track of whether recognition is ongoing
+    let recognition; // Define recognition outside of the startSpeechRecognition function
+    let lastTranslatedText = ''; // Variable to store the last translated text
 
-restartButton.addEventListener('click', () => {
-  if (recognizing) {
-    recognition.stop();
-    recognizing = false;
-  }
-  startButton.innerHTML = '<i class="fas fa-microphone"></i> Mulai Recording'; // Add microphone icon before the text
-  translationText.textContent = 'Hasil Terjemahan...'; // Set translation text back to its initial state
-});
+    startButton.addEventListener('click', () => {
+      if (!recognizing) {
+        startSpeechRecognition();
+        recognizing = true;
+        startButton.textContent = 'Mendengarkan...'; // Change button text to indicate recognition is ongoing
+      } else {
+        restartRecognition();
+      }
+    });
 
+    stopButton.addEventListener('click', () => {
+      if (recognizing) {
+        recognition.stop();
+        recognizing = false;
+        startButton.innerHTML =
+        '<i class="fas fa-microphone"></i> Mulai Recording'; // Reset button text if recognition is stopped manually
+      }
+    });
 
-function startSpeechRecognition() {
-  recognition = new webkitSpeechRecognition() || new SpeechRecognition();
-  recognition.lang = 'id-ID'; // Default language is Indonesian
-
-  recognition.onresult = (event) => {
-    const transcript = event.results[0][0].transcript;
-    translationText.textContent = 'Hasil Terjemahan...';
-    translate(transcript);
-  };
-
-  recognition.start();
-}
-
-function restartRecognition() {
-  if (recognizing) {
-    recognition.stop();
-  }
-  recognizing = false;
-  startButton.innerHTML = '<i class="fas fa-microphone"></i> Mulai Recording'; // Reset button text to its original state
-}
-
-recognition.onerror = (event) => {
-  console.error('Recognition error:', event.error);
-  if (recognizing) {
-    recognition.stop();
-  }
-  recognizing = false;
-  startButton.innerHTML = '<i class="fas fa-microphone"></i> Mulai Recording'; // Reset button text to its original state
-};
-
-recognition.onend = () => {
-  recognizing = false;
-  startButton.innerHTML = '<i class="fas fa-microphone"></i> Mulai Recording'; // Reset button text to its original state
-};
-
-async function translate(text) {
-  try {
-    const fromLanguage = fromLanguageSelect.value;
-    const toLanguage = toLanguageSelect.value;
-
-    lastTranslatedText = await googleTranslate(text, { from: fromLanguage, to: toLanguage });
-    translationText.textContent = lastTranslatedText;
-    speak(lastTranslatedText, toLanguage);
-  } catch (error) {
-    console.error('Translation error:', error);
-    translationText.textContent = 'Translation error';
-  }
-}
-
-// Function to detect language
-function googleDetectLanguage(text) {
-  return new Promise((resolve, reject) => {
-    const apiUrl = `https://translate.googleapis.com/translate_a/single?client=gtx&sl=auto&tl=en&q=${encodeURI(text)}`;
-    fetch(apiUrl)
-      .then(response => response.json())
-      .then(data => {
-        const language = data[2];
-        resolve({ language });
-      })
-      .catch(reject);
-  });
-}
-
-// Function to translate text
-function googleTranslate(text, { from = 'auto', to = 'en' } = {}) {
-  return new Promise((resolve, reject) => {
-    const apiUrl = `https://translate.googleapis.com/translate_a/single?client=gtx&sl=${from}&tl=${to}&dt=t&q=${encodeURI(text)}`;
-    fetch(apiUrl)
-      .then(response => response.json())
-      .then(data => {
-        const translatedText = data[0][0][0];
-        resolve(translatedText);
-      })
-      .catch(reject);
-  });
-}
-
-function speak(text, lang) {
-  const utterance = new SpeechSynthesisUtterance(text);
-  let voiceURI;
-  switch (lang) {
-    case 'en':
-      utterance.lang = 'en-US';
-      voiceURI = 'Google US English';
-      break;
-    case 'ja':
-      utterance.lang = 'ja-JP';
-      voiceURI = 'Google 日本語';
-      break;
-    case 'id':
-      utterance.lang = 'id-ID';
-      voiceURI = 'Google Bahasa Indonesia';
-      break;
-    case 'jv':
-      utterance.lang = 'jv-ID';
-      voiceURI = 'Google Basa Jawa';
-      break;
-    case 'zh-CN': // Menambahkan kasus untuk bahasa Cina
-      utterance.lang = 'zh-CN'; // Gunakan kode bahasa Cina
-      voiceURI = 'Google 普通话（中国大陆）'; // Pilih suara Cina standar
-      break;
-    default:
-      utterance.lang = 'en-US';
-      voiceURI = 'Google US English';
-      break;
-  }
-  utterance.voiceURI = voiceURI;
-  speechSynthesis.speak(utterance);
-}
+    restartButton.addEventListener('click', () => {
+      if (recognizing) {
+        recognition.stop();
+        recognizing = false;
+      }
+      startButton.innerHTML =
+      '<i class="fas fa-microphone"></i> Mulai Recording'; // Add microphone icon before the text
+      translationText.textContent = 'Hasil Terjemahan...'; // Set translation text back to its initial state
+    });
 
 
-</script>
+    function startSpeechRecognition() {
+      recognition = new webkitSpeechRecognition() || new SpeechRecognition();
+      recognition.lang = 'id-ID'; // Default language is Indonesian
 
-<!-- Bootstrap JS and dependencies -->
-<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
-<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+      recognition.onresult = (event) => {
+        const transcript = event.results[0][0].transcript;
+        translationText.textContent = 'Hasil Terjemahan...';
+        translate(transcript);
+      };
+
+      recognition.start();
+    }
+
+    function restartRecognition() {
+      if (recognizing) {
+        recognition.stop();
+      }
+      recognizing = false;
+      startButton.innerHTML =
+      '<i class="fas fa-microphone"></i> Mulai Recording'; // Reset button text to its original state
+    }
+
+    recognition.onerror = (event) => {
+      console.error('Recognition error:', event.error);
+      if (recognizing) {
+        recognition.stop();
+      }
+      recognizing = false;
+      startButton.innerHTML =
+      '<i class="fas fa-microphone"></i> Mulai Recording'; // Reset button text to its original state
+    };
+
+    recognition.onend = () => {
+      recognizing = false;
+      startButton.innerHTML =
+      '<i class="fas fa-microphone"></i> Mulai Recording'; // Reset button text to its original state
+    };
+
+    async function translate(text) {
+      try {
+        const fromLanguage = fromLanguageSelect.value;
+        const toLanguage = toLanguageSelect.value;
+
+        lastTranslatedText = await googleTranslate(text, {
+          from: fromLanguage,
+          to: toLanguage
+        });
+        translationText.textContent = lastTranslatedText;
+        speak(lastTranslatedText, toLanguage);
+      } catch (error) {
+        console.error('Translation error:', error);
+        translationText.textContent = 'Translation error';
+      }
+    }
+
+    // Function to detect language
+    function googleDetectLanguage(text) {
+      return new Promise((resolve, reject) => {
+        const apiUrl =
+          `https://translate.googleapis.com/translate_a/single?client=gtx&sl=auto&tl=en&q=${encodeURI(text)}`;
+        fetch(apiUrl)
+          .then(response => response.json())
+          .then(data => {
+            const language = data[2];
+            resolve({
+              language
+            });
+          })
+          .catch(reject);
+      });
+    }
+
+    // Function to translate text
+    function googleTranslate(text, {
+      from = 'auto',
+      to = 'en'
+    } = {}) {
+      return new Promise((resolve, reject) => {
+        const apiUrl =
+          `https://translate.googleapis.com/translate_a/single?client=gtx&sl=${from}&tl=${to}&dt=t&q=${encodeURI(text)}`;
+        fetch(apiUrl)
+          .then(response => response.json())
+          .then(data => {
+            const translatedText = data[0][0][0];
+            resolve(translatedText);
+          })
+          .catch(reject);
+      });
+    }
+
+    function speak(text, lang) {
+      const utterance = new SpeechSynthesisUtterance(text);
+      let voiceURI;
+      switch (lang) {
+        case 'en':
+          utterance.lang = 'en-US';
+          voiceURI = 'Google US English';
+          break;
+        case 'ja':
+          utterance.lang = 'ja-JP';
+          voiceURI = 'Google 日本語';
+          break;
+        case 'id':
+          utterance.lang = 'id-ID';
+          voiceURI = 'Google Bahasa Indonesia';
+          break;
+        case 'jv':
+          utterance.lang = 'jv-ID';
+          voiceURI = 'Google Basa Jawa';
+          break;
+        case 'zh-CN': // Menambahkan kasus untuk bahasa Cina
+          utterance.lang = 'zh-CN'; // Gunakan kode bahasa Cina
+          voiceURI = 'Google 普通话（中国大陆）'; // Pilih suara Cina standar
+          break;
+        default:
+          utterance.lang = 'en-US';
+          voiceURI = 'Google US English';
+          break;
+      }
+      utterance.voiceURI = voiceURI;
+      speechSynthesis.speak(utterance);
+    }
+
+    
+  </script>
+
+  <!-- Bootstrap JS and dependencies -->
+  <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </body>
+
 </html>
